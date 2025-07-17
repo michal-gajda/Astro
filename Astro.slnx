@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/WebUI/">
+    <Project Path="src/WebUI/Astro.WebUI.csproj" />
+  </Folder>
+</Solution>

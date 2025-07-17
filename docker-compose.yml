@@ -1,0 +1,39 @@
+networks:
+  astro-network:
+    name: astro-network
+    driver: bridge
+
+services:
+  astro:
+    image: astro:latest
+    build:
+      context: ./src/
+      dockerfile: ../Dockerfile
+    container_name: astro-webui
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5080
+      - DOTNET_RUNNING_IN_CONTAINER=true
+      - DOTNET_USE_POLLING_FILE_WATCHER=true
+      - OTEL_DOTNET_AUTO_INSTRUMENTATION_ENABLED=true
+      - OTEL_SERVICE_NAME="astro"
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://dashboard:18889
+    ports:
+      - "5080:5080"
+    networks:
+      - astro-network
+    restart: unless-stopped
+
+  dashboard:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:latest
+    container_name: aspire-dashboard
+    environment:
+      - DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS=true
+    expose:
+      - 18889
+    ports:
+      - "18888:18888"
+    networks:
+      - astro-network
+    restart: unless-stopped
