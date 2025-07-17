@@ -5,10 +5,10 @@ networks:
 
 services:
   astro:
-    image: astro:latest
+    image: gajdaltd/astro:latest
     build:
       context: ./src/
-      dockerfile: ../Dockerfile
+      dockerfile: Dockerfile
     container_name: astro-webui
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
