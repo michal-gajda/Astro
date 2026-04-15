@@ -18,12 +18,16 @@ services:
       - OTEL_SERVICE_NAME="astro"
       - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://dashboard:18889
+      - DATA_PROTECTION_KEYS_PATH=/app/.aspnet/DataProtection-Keys
+      - DATA_PROTECTION_CERT_PATH=/https/astro-dp.pfx
+      - DATA_PROTECTION_CERT_PASSWORD=${DATA_PROTECTION_CERT_PASSWORD:-astro-local-dev-password}
     ports:
       - "5080:5080"
     networks:
       - astro-network
     volumes:
       - ./DataProtection-Keys/:/app/.aspnet/DataProtection-Keys/:rw
+      - ./certs/:/https/:ro
     restart: unless-stopped
 
   dashboard:

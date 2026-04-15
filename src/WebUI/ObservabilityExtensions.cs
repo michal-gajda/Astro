@@ -33,14 +33,16 @@ internal static class ObservabilityExtensions
         builder.Services.AddOpenTelemetry()
             .WithTracing(tracing => tracing
                 .SetResourceBuilder(resourceBuilder)
-                .AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation()
+                .SetSampler(new AlwaysOnSampler())
+                .AddAspNetCoreInstrumentation(options => options.RecordException = true)
+                .AddHttpClientInstrumentation(options => options.RecordException = true)
                 .AddSignalRInstrumentation()
                 .AddOtlpExporter())
             .WithMetrics(metrics => metrics
                 .SetResourceBuilder(resourceBuilder)
                 .AddAspNetCoreInstrumentation()
                 .AddHttpClientInstrumentation()
+                .AddProcessInstrumentation()
                 .AddRuntimeInstrumentation()
                 .AddOtlpExporter());
 
@@ -49,6 +51,6 @@ internal static class ObservabilityExtensions
 
     public static void UseObservability(this WebApplication app)
     {
-        app.UseHealthChecks("/health");
+        app.UseHealthChecks("/healthz");
     }
 }
